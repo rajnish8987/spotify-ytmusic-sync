@@ -10,6 +10,16 @@ A production-grade web application that synchronizes your Spotify playlists to Y
 
 ---
 
+## 📖 Index
+1. [✨ Features](#-features)
+2. [🚀 Getting Started](#-getting-started-windows)
+3. [🔑 How to Get YouTube Music Cookies](#-how-to-get-youtube-music-cookies)
+4. [⚠️ Spotify Premium Workaround (CSV)](#-spotify-premium-restriction-workaround)
+5. [🗂️ Project Structure](#-project-structure)
+6. [🛡️ License](#-license)
+
+---
+
 ## ✨ Features
 
 ### 🔄 Core Engine
@@ -35,32 +45,61 @@ A production-grade web application that synchronizes your Spotify playlists to Y
 
 ## 🚀 Getting Started (Windows)
 
-### 1. Prerequisites
-- **Python 3.10+** — [python.org](https://www.python.org/downloads/) (Add to PATH).
-- **Spotify Developer Account** — [developer.spotify.com](https://developer.spotify.com/dashboard).
-- **EditThisCookie extension** — For exporting YouTube cookies.
+Follow these steps in order to set up the synchronizer:
 
-### 2. Initial Setup
-1.  Navigate to the `backend` folder and run `pip install -r requirements.txt`.
-2.  **Connect Spotify**: Create an app in the Spotify Dashboard, add `http://127.0.0.1:8000/api/spotify/callback` to Redirect URIs, and create a `backend/.env` with your `CLIENT_ID` and `CLIENT_SECRET`.
+### Step 1: Prerequisites
+- **Python 3.10+** — [Download here](https://www.python.org/downloads/) (Ensure "Add to PATH" is checked).
+- **Spotify Developer App** — Create one at [Spotify Dashboard](https://developer.spotify.com/dashboard).
+- **Cookie Extension** — Install a "Copy Cookies" extension (e.g., [Copy Cookies](https://chrome.google.com/webstore/detail/copy-cookies/iphcomljgeghcehfbngchmfdbmhkfkbi)).
 
-### 3. Launching the App
+### Step 2: Initial Configuration
+1.  **Configure Spotify**:
+    - Add `http://127.0.0.1:8000/api/spotify/callback` to your Spotify App's **Redirect URIs**.
+    - Create a file named `.env` inside the `backend` folder.
+    - Add your credentials:
+      ```env
+      CLIENT_ID=your_spotify_client_id
+      CLIENT_SECRET=your_spotify_client_secret
+      ```
+2.  **Install Dependencies**:
+    - Open a terminal in the `backend` folder and run: `pip install -r requirements.txt`.
+
+### Step 3: Launch & Authenticate
 1.  Double-click **`START - Spotify Sync.bat`** in the root folder.
-2.  A new browser tab will open at **`http://localhost:8081`** (Web Launcher).
-3.  Click **"▶ Start App"**. Wait for the status to turn green.
-4.  Click **"🌐 Open App"** to begin syncing!
+2.  Your browser will open to **`http://localhost:8081`** (Web Launcher).
+3.  Click **"▶ Start App"**. Wait for the status indicator to turn green.
+4.  Click **"🌐 Open App"**.
+5.  **Connect Spotify**: Click the Spotify Login button in the app.
+6.  **Connect YouTube Music**: Follow the [Cookie Instructions](#-how-to-get-youtube-music-cookies) below.
+
+---
+
+## 🔑 How to Get YouTube Music Cookies
+
+The app requires your session cookies to interact with your YouTube Music account. Follow these steps to extract them safely:
+
+1.  **Install an Extension**: Install a **"Copy Cookies"** extension from the Chrome Web Store.
+2.  **Login**: Go to [music.youtube.com](https://music.youtube.com) and ensure you are logged in.
+3.  **Export Cookies**:
+    - Click the extension icon in your toolbar.
+    - Click **"Copy"** or **"Export"** to copy your session cookies to the clipboard.
+4.  **Paste in App**:
+    - Go back to the Sync App (`localhost:8000`).
+    - Select the **YouTube Music Auth** tab or click the "Fix" button on the YouTube status badge.
+    - Paste the content from your clipboard into the text box and click **Save**.
+5.  **Verify**: The status badge should turn green with "Authenticated".
 
 ---
 
 ## ⚠️ Spotify Premium Restriction Workaround
+
 If you do not have **Spotify Premium**, you may encounter an error stating: *"Your application is blocked from accessing the Web API..."*.
 
 **Follow the CSV Workaround:**
 1.  Go to **[Exportify](https://exportify.net/)** and log in with Spotify.
-2.  You will see a list of your playlists (e.g., "117 playlists").
-3.  Click **Export** next to the playlist you want to sync. Save the `.csv` file.
-4.  In the Sync App, click **📁 Import CSV** in the sidebar.
-5.  Upload the `.csv` and sync as normal—**No API or Premium required!**
+2.  Find the playlist you want to sync and click **Export**. Save the `.csv` file.
+3.  In the Sync App, click **📁 Import CSV** in the sidebar.
+4.  Upload the `.csv` and sync—**No API or Premium required!**
 
 ---
 

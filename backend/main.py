@@ -208,8 +208,8 @@ def ytmusic_save_headers(req: YTHeadersRequest):
                 )
                 if expiry_ts:
                     save_cookie_expiry(expiry_ts)
-                # Build a cookie string from the JSON array
-                raw = "; ".join(f"{c['name']}={c['value']}" for c in cookies)
+                # Build a cookie string from the JSON array and wrap in a header
+                raw = "Cookie: " + "; ".join(f"{c['name']}={c['value']}" for c in cookies)
         except (json_lib.JSONDecodeError, TypeError):
             pass  # Not JSON — treat as raw cookie/header string
 
