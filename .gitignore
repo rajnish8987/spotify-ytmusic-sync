@@ -1,0 +1,27 @@
+# Environment and Secrets
+.env
+backend/oauth.json
+backend/oauth.txt
+backend/.cache
+backend/browser_headers.json
+backend/cookie_expiry.json
+
+# Databases and App State
+backend/sync_history.db
+backend/app_config.json
+backend/sync_resume.json
+
+# Logs and Caches
+backend/search_cache_*.json
+backend/upload_state_*.json
+backend/*.txt
+backend/*.log
+backend/__pycache__/
+backend/venv/
+
+# Temp running files
+server.pid.tmp
+
+# OS files
+.DS_Store
+Thumbs.db

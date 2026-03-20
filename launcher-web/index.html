@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Sync Launcher</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="logo-icon">🎵</span>
+                <h1>Spotify ➜ YT Music</h1>
+            </div>
+            <div class="status-badge" id="status-badge">
+                <div class="status-dot"></div>
+                <span id="status-text">Checking Status...</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="card" id="launcher-card">
+                <h2>Application Server</h2>
+                <p>Manage the Python backend API and web interface.</p>
+                
+                <div class="actions">
+                    <button id="btn-start" class="btn primary" disabled>▶ Start App</button>
+                    <button id="btn-stop" class="btn danger" disabled>⏹ Stop App</button>
+                    <button id="btn-open" class="btn secondary" disabled>🌐 Open App</button>
+                </div>
+
+                <div class="port-info">
+                    Server runs locally on <strong>http://localhost:8000</strong>
+                </div>
+            </div>
+
+            <div class="log-container">
+                <div class="log-header">
+                    <h3>Launcher Logs</h3>
+                    <button id="btn-clear-logs" class="btn text-only" title="Clear Logs">✕</button>
+                </div>
+                <div id="log-output" class="log-output">
+                    <!-- Logs injected via JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
