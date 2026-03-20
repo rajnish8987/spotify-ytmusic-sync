@@ -42,7 +42,8 @@ def on_startup():
 
 SYNC_STATE = {
     "is_paused": False,
-    "is_cancelled": False
+    "is_cancelled": False,
+    "is_running": False
 }
 
 @app.post("/api/sync/pause")
@@ -208,8 +209,15 @@ def ytmusic_save_headers(req: YTHeadersRequest):
                 )
                 if expiry_ts:
                     save_cookie_expiry(expiry_ts)
-                # Build a cookie string from the JSON array and wrap in a header
-                raw = "Cookie: " + "; ".join(f"{c['name']}={c['value']}" for c in cookies)
+                # Build a full header block from the JSON cookies
+                cookie_str = "; ".join(f"{c['name']}={c['value']}" for c in cookies)
+                raw = (
+                    "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36\n"
+                    "Accept: */*\n"
+                    "Accept-Language: en-US,en;q=0.5\n"
+                    "X-Goog-AuthUser: 0\n"
+                    f"Cookie: {cookie_str}"
+                )
         except (json_lib.JSONDecodeError, TypeError):
             pass  # Not JSON — treat as raw cookie/header string
 
@@ -305,7 +313,7 @@ def analytics_unmatched():
 @app.get("/api/unmatched/recent")
 def recent_unmatched():
     """Return unmatched tracks from the most recent run — used by the persistent Not Found panel."""
-    tracks = get_recent_unmatched(limit=300)
+    tracks = get_recent_unmatched(300)
     return {"tracks": tracks}
 
 # ─── Scheduler Routes ──────────────────────────────────────────────────────────
