@@ -1,23 +1,32 @@
 # Environment and Secrets
 .env
-backend/oauth.json
-backend/oauth.txt
-backend/.cache
-backend/browser_headers.json
-backend/cookie_expiry.json
+**/oauth.json
+**/oauth.txt
+**/.cache
+**/browser_headers.json
+**/browser_cookies.txt
+**/cookie_expiry.json
 
 # Databases and App State
-backend/sync_history.db
-backend/app_config.json
-backend/sync_resume.json
+**/*.db
+**/app_config.json
+**/sync_resume.json
+**/excluded_playlists.json
+sync_history.db
+
+# Test Scripts (contain account-specific IDs)
+test_final_ids.py
+discover_page_ids.py
+tmp/
 
 # Logs and Caches
-backend/search_cache_*.json
-backend/upload_state_*.json
-backend/*.txt
-backend/*.log
-backend/__pycache__/
-backend/venv/
+**/search_cache_*.json
+**/upload_state_*.json
+**/*.txt
+**/*.log
+**/__pycache__/
+**/venv/
+**/node_modules/
 
 # Temp running files
 server.pid.tmp

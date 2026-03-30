@@ -17,7 +17,7 @@ def _run_background_sync(spotify_id: str, playlist_ids: list[str]):
     try:
         from sync_history import update_schedule_last_run
         # Lazy import to avoid circular dependency
-        from main import _sync_generator
+        from routes.sync import _sync_generator
         log.info(f"[Scheduler] Auto-syncing schedule: {spotify_id}")
         for _ in _sync_generator(playlist_ids, {}, dry_run=False):
             pass  # generator saves history internally

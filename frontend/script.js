@@ -167,7 +167,7 @@ function switchTab(tab) {
 function openSettings() { switchTab("settings"); }
 
 // ── Auth ───────────────────────────────────────────────────────────────────────
-function setAuth(service, authed, doCheck = true) {
+async function setAuth(service, authed, doCheck = true) {
     if (service === "spotify") {
         spotifyAuthed = authed;
         $("sidebar-spotify").className = `status-dot ${authed ? "ok" : "error"}`;
@@ -179,7 +179,21 @@ function setAuth(service, authed, doCheck = true) {
         $("sidebar-yt").className = `status-dot ${authed ? "ok" : "error"}`;
         $("yt-auth-status").textContent = authed ? "✅ Connected" : "Not connected";
         $("yt-auth-status").style.color = authed ? "var(--succ)" : "var(--text-sec)";
-        if (authed) { $("btn-yt-auth").textContent = "Connected ✓"; $("btn-yt-auth").disabled = true; $("yt-auth-form").classList.add("hidden"); }
+        if (authed) { 
+            $("btn-yt-auth").textContent = "Connected ✓"; 
+            $("btn-yt-auth").disabled = true; 
+            $("yt-auth-form").classList.add("hidden"); 
+            // Fetch identity
+            try {
+                const info = await fetch(`${API}/ytmusic/whoami`).then(r => r.json());
+                if (info.authenticated) {
+                    $("yt-identity-info").classList.remove("hidden");
+                    $("yt-user-name").textContent = info.name;
+                }
+            } catch (_) {}
+        } else {
+            $("yt-identity-info").classList.add("hidden");
+        }
         $("auth-banner").classList.toggle("hidden", authed);
     }
     if (doCheck && (spotifyAuthed || isSpotifySkipped) && ytAuthed) proceedToPlaylists();
@@ -214,11 +228,12 @@ $("btn-yt-auth").addEventListener("click", () => $("yt-auth-form").classList.tog
 
 $("btn-yt-save").addEventListener("click", async () => {
     const raw = $("yt-headers-input").value.trim();
+    const brandId = $("yt-brand-id") ? $("yt-brand-id").value.trim() : null;
     if (!raw) { alert("Paste your cookie JSON first."); return; }
-    await saveYTCookies(raw, $("btn-yt-save"), $("yt-auth-form"));
+    await saveYTCookies(raw, $("btn-yt-save"), $("yt-auth-form"), brandId);
 });
 
-async function saveYTCookies(raw, btn, form) {
+async function saveYTCookies(raw, btn, form, brandId = null) {
     try {
         let headersRaw = raw;
         try {
@@ -228,7 +243,10 @@ async function saveYTCookies(raw, btn, form) {
         if (btn) { btn.textContent = "Saving..."; btn.disabled = true; }
         const res = await fetch(`${API}/ytmusic/save-headers`, {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ headers_raw: headersRaw })
+            body: JSON.stringify({ 
+                headers_raw: headersRaw,
+                brand_id: brandId || null 
+            })
         });
         const data = await res.json();
         if (res.ok && data.status === "success") {
@@ -290,27 +308,49 @@ $("btn-csv-process").addEventListener("click", () => {
             const lines = text.split('\n').map(l => l.trim()).filter(l => l);
             if (lines.length < 2) throw new Error("File looks empty or invalid.");
             
-            // Very simple CSV parser, assuming Spotify exports (which usually have quotes)
-            const headers = lines[0].toLowerCase().split(',').map(h => h.replace(/"/g, '').trim());
+            // Robust CSV parser that handles quoted fields with commas and escaped quotes
+            const splitCsv = (line) => {
+                const result = [];
+                let current = "";
+                let inQuotes = false;
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    if (char === '"' && line[i+1] === '"') { // Escaped quote
+                        current += '"'; i++;
+                    } else if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        result.push(current.trim());
+                        current = "";
+                    } else {
+                        current += char;
+                    }
+                }
+                result.push(current.trim());
+                return result;
+            };
+
+            const headers = splitCsv(lines[0]).map(h => h.toLowerCase().replace(/"/g, '').trim());
             const trackIdx = headers.findIndex(h => h.includes('track name') || h === 'track');
             const artistIdx = headers.findIndex(h => h.includes('artist') || h === 'artist name');
+            const durationIdx = headers.findIndex(h => h.includes('duration'));
             
-            if (trackIdx === -1) throw new Error("Could not find 'Track Name' column in CSV.");
+            if (trackIdx === -1) throw new Error("Could not find 'Track Name' (or 'Track') column in CSV.");
             
             const tracks = [];
             for (let i = 1; i < lines.length; i++) {
-                // Regex to split CSV by commas, respecting quotes
-                const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(col => col.replace(/^"|"$/g, '').trim());
+                const row = splitCsv(lines[i]);
                 if (!row[trackIdx]) continue;
                 
                 let artist = artistIdx !== -1 ? row[artistIdx] || "" : "";
                 let trackName = row[trackIdx];
+                let durationMs = (durationIdx !== -1 && row[durationIdx]) ? parseInt(row[durationIdx]) : 0;
                 
                 tracks.push({
                     name: trackName,
                     artist: artist,
                     query: `${trackName} ${artist}`.trim(),
-                    duration_ms: 0 // Optional, but usually not in simple CSVs
+                    duration_ms: isNaN(durationMs) ? 0 : durationMs
                 });
             }
             

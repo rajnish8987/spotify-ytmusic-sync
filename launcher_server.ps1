@@ -44,14 +44,18 @@ function Start-PythonApp {
         return $true
     }
 
-    Add-Log "Installing python dependencies..."
-    
-    # Run pip install synchronously
-    $pipProc = Start-Process -FilePath "pip" -ArgumentList "install -r requirements.txt --quiet" -WorkingDirectory $BackendDir -NoNewWindow -PassThru -Wait
-    if ($pipProc.ExitCode -ne 0) {
-        Add-Log "ERROR: pip install failed. Make sure Python is on PATH."
-        return $false
+    if (Test-Path (Join-Path $BackendDir "requirements.txt")) {
+        Add-Log "Installing python dependencies..."
+        # Run pip install synchronously
+        $pipProc = Start-Process -FilePath "pip" -ArgumentList "install -r requirements.txt --quiet" -WorkingDirectory $BackendDir -NoNewWindow -PassThru -Wait
+        if ($pipProc.ExitCode -ne 0) {
+            Add-Log "ERROR: pip install failed. Make sure Python/Pip is on PATH."
+            return $false
+        }
+    } else {
+        Add-Log "WARNING: requirements.txt not found. Skipping dependency install."
     }
+
     
     Add-Log "Starting FastAPI server on port $PythonPort..."
     
@@ -201,7 +205,10 @@ function Start-ApiServer {
                             $tempLauncher = Join-Path $BackendDir "_start_backend.ps1"
                             $launcherCode = @"
 Set-Location -Path `"$BackendDir`"
-Start-Process -FilePath `"pip`" -ArgumentList `"install -r requirements.txt --quiet`" -Wait -WindowStyle Hidden -RedirectStandardOutput `"pip_log.txt`" -RedirectStandardError `"pip_err.txt`"
+if (Test-Path `"`$BackendDir\requirements.txt`") {
+    Start-Process -FilePath `"pip`" -ArgumentList `"install -r requirements.txt --quiet`" -Wait -WindowStyle Hidden -RedirectStandardOutput `"pip_log.txt`" -RedirectStandardError `"pip_err.txt`"
+}
+
 Start-Process -FilePath `"python`" -ArgumentList `"-m uvicorn main:app --host 127.0.0.1 --port $PythonPort`" -WindowStyle Hidden -RedirectStandardOutput `"app_log.txt`" -RedirectStandardError `"app_err.txt`"
 "@
                             Set-Content -Path $tempLauncher -Value $launcherCode

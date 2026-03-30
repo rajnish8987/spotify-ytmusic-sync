@@ -24,6 +24,7 @@ A production-grade web application that synchronizes your Spotify playlists to Y
 
 ### 🔄 Core Engine
 - **Smart Delta Sync**: Only processes new tracks; unchanged playlists are skipped in <1s.
+- **Direct YTM API**: Uses internal internal/manual API calls (`WEB_REMIX`) for 100% library visibility, including Liked Music.
 - **Parallel Playlists**: Sync multiple playlists simultaneously (1–6 concurrent slots).
 - **Auto-Retry Unmatched**: Automatically retries missed tracks with fallback artist/title-only queries.
 - **Crash Recovery**: Saves partial progress; resumes seamlessly after a browser or server restart.

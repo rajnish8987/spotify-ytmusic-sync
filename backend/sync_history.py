@@ -384,3 +384,11 @@ def _calc_next_run(frequency: str, from_ts: int) -> int:
 
 # Initialise
 init_db()
+
+def get_all_unmatched_tracks() -> list[tuple]:
+    conn = _get_conn()
+    rows = conn.execute(
+        "SELECT playlist_name, track_name, artist FROM unmatched_tracks ORDER BY playlist_name, artist"
+    ).fetchall()
+    conn.close()
+    return [(r[0], r[1], r[2]) for r in rows]

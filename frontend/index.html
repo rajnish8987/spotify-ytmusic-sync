@@ -77,12 +77,19 @@
                             <div class="auth-card-icon">🔴</div>
                             <h3>YouTube Music</h3>
                             <p>Paste your browser cookies to authenticate.</p>
-                            <div id="yt-auth-status" class="auth-card-status">Not connected</div>
-                            <button id="btn-yt-auth" class="btn secondary">Connect YT Music</button>
+                             <div id="yt-auth-status" class="auth-card-status">Not connected</div>
+                             <div id="yt-identity-info" class="hidden" style="font-size:0.75rem; color:var(--succ); margin-bottom:0.6rem; background:rgba(34,197,94,0.1); padding:0.4rem; border-radius:4px; text-align:center;">
+                                 👤 Connected as <strong id="yt-user-name">...</strong>
+                             </div>
+                             <button id="btn-yt-auth" class="btn secondary">Connect YT Music</button>
                             <div id="yt-auth-form" class="hidden" style="margin-top:0.75rem;text-align:left">
-                                <p style="font-size:0.8rem;margin-bottom:0.4rem">Export cookies from <a href="https://music.youtube.com" target="_blank" style="color:var(--primary)">music.youtube.com</a> using a cookie extension (JSON format):</p>
-                                <textarea id="yt-headers-input" rows="4" placeholder="Paste cookie JSON here..."></textarea>
-                                <button id="btn-yt-save" class="btn primary" style="width:100%;margin-top:0.4rem">Save &amp; Connect ✓</button>
+                                <p style="font-size:0.8rem;margin-bottom:0.4rem">Export cookies from <a href="https://music.youtube.com" target="_blank" style="color:var(--primary)">music.youtube.com</a> using a cookie extension (JSON or Netscape/Text format):</p>
+                                <textarea id="yt-headers-input" rows="4" placeholder="Paste cookie JSON or Netscape text here..."></textarea>
+                                <div style="margin-top:0.5rem;">
+                                    <label for="yt-brand-id" style="font-size:0.75rem; color:var(--text-sec); display:block; margin-bottom:0.2rem;">Brand Account / Channel ID (Optional)</label>
+                                    <input type="text" id="yt-brand-id" placeholder="e.g. UC..." style="width:100%; padding:0.5rem; background:var(--bg-sec); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:0.85rem;">
+                                </div>
+                                <button id="btn-yt-save" class="btn primary" style="width:100%;margin-top:0.6rem">Save &amp; Connect ✓</button>
                             </div>
                         </div>
                     </div>
@@ -288,8 +295,8 @@
                 </div>
                 <div class="settings-section glass-card">
                     <h3>🔴 YouTube Music Cookies</h3>
-                    <p>Paste fresh cookie JSON exported from <a href="https://music.youtube.com" target="_blank">music.youtube.com</a>. Cookies expire every few months.</p>
-                    <textarea id="settings-cookie-input" rows="6" placeholder="Paste cookie JSON array here..."></textarea>
+                    <p>Paste fresh cookie JSON or Netscape text exported from <a href="https://music.youtube.com" target="_blank">music.youtube.com</a>. Cookies expire every few months.</p>
+                    <textarea id="settings-cookie-input" rows="6" placeholder="Paste cookie JSON array or Netscape text here..."></textarea>
                     <button id="btn-settings-save-yt" class="btn primary" style="margin-top:0.5rem">Update Cookies</button>
                     <div id="settings-yt-msg" class="settings-msg"></div>
                 </div>

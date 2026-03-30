@@ -8,9 +8,9 @@ LIKED_SONGS_ID = "__liked_songs__"
 
 def get_spotify_oauth():
     return SpotifyOAuth(
-        client_id=os.getenv("SPOTIPY_CLIENT_ID", "unconfigured"),
-        client_secret=os.getenv("SPOTIPY_CLIENT_SECRET", "unconfigured"),
-        redirect_uri=os.getenv("SPOTIPY_REDIRECT_URI", "http://127.0.0.1:8000/api/spotify/callback"),
+        client_id=os.getenv("CLIENT_ID", os.getenv("SPOTIPY_CLIENT_ID", "unconfigured")),
+        client_secret=os.getenv("CLIENT_SECRET", os.getenv("SPOTIPY_CLIENT_SECRET", "unconfigured")),
+        redirect_uri=os.getenv("REDIRECT_URI", os.getenv("SPOTIPY_REDIRECT_URI", "http://127.0.0.1:8000/api/spotify/callback")),
         scope="playlist-read-private playlist-read-collaborative user-library-read"
     )
 
